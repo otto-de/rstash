@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+function usage() {
+  echo "usage: rstash [PIN]"
+  echo "  without subcommand or PIN: push your local changes to the remote stash"
+  echo "  subcommands:"
+  echo "    help:  print this usage."
+  echo "    list:  list all remotely existing stashes."
+  echo "    [PIN]:   apply changes from remote stash."
+  echo "             PIN: returned number after pushing to remote stash"
+  exit 1
+}
+
+function indent() {
+  sed 's/^/    /';
+}
+
+function pop() {
+    RANDOM_BRANCH_NUMBER=$1
+    git pull -r 2>&1 | indent
+    BRANCH_NAME="rstash-$RANDOM_BRANCH_NUMBER"
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    git fetch -a 2>&1 | indent
+    git fetch -p 2>&1 | indent
+    if ! git ls-remote --exit-code --heads origin "$BRANCH_NAME"; then
+      echo "error: unknown rstash pin '$RANDOM_BRANCH_NUMBER'"
+      exit 1
+    fi
+    git checkout "$BRANCH_NAME" 2>&1 | indent
+    git pull -r 2>&1 | indent
+    git checkout "$CURRENT_BRANCH" 2>&1 | indent
+    git merge --no-commit --squash "$BRANCH_NAME" 2>&1 | indent
+    git reset HEAD 2>&1 | indent
+    while true; do
+      read -p "Delete temporary rstash branch locally and remotely? [Y/n] " yn
+      case $yn in
+      Y | y | '')
+        git branch -D "$BRANCH_NAME" 2>&1 | indent
+        git push origin --delete "$BRANCH_NAME" 2>&1 | indent
+        break
+        ;;
+      n)
+        break
+        ;;
+      *)
+        echo "error: Please answer 'y' or 'n'."
+        ;;
+      esac
+    done
+}
+
+if [ "$#" -eq 0 ]; then
+  if [ -z "$(git status --porcelain)" ]; then
+    echo "nothing to commit, working tree clean"
+  else
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    git fetch -a 2>&1 | indent
+    git fetch -p 2>&1 | indent
+    while true; do
+      RANDOM_BRANCH_NUMBER=$(echo $((100 + RANDOM % 900)))
+      BRANCH_NAME="rstash-$RANDOM_BRANCH_NUMBER"
+      if ! git ls-remote --exit-code --heads origin "$BRANCH_NAME"; then
+        break
+      fi
+    done
+    git checkout -b "$BRANCH_NAME" 2>&1 | indent
+    git add . 2>&1 | indent
+    git commit -m "temporary rstash branch" 2>&1 | indent
+    git push -u origin "$BRANCH_NAME" 2>&1 | indent
+    git checkout "$CURRENT_BRANCH" 2>&1 | indent
+    git branch -D "$BRANCH_NAME" 2>&1 | indent
+    echo
+    echo "rstash pin: ${RANDOM_BRANCH_NUMBER}"
+    while true; do
+      read -p "Discard changes locally? [Y/n] " yn
+      case $yn in
+      Y | y | '')
+        git reset --hard HEAD 2>&1 | indent
+        git clean -fd 2>&1 | indent
+        break
+        ;;
+      n)
+        break
+        ;;
+      *)
+        echo "error: Please answer 'y' or 'n'."
+        ;;
+      esac
+    done
+  fi
+elif [ "$#" -eq 1 ]; then
+  if [ "$1" == "help" ]; then
+    usage
+  elif [ "$1" == "list" ]; then
+    git fetch -a 2>&1 | indent
+    git fetch -p 2>&1 | indent
+    git for-each-ref --sort=committerdate 'refs/remotes/origin/rstash-*' --format='%(color:yellow)%(refname:short)'$'\x1d''%(color:reset)%(authorname)'$'\x1d''%(color:green)%(committerdate:relative)%(color:reset)' | sed '1i PIN'$'\x1d''AUTHOR'$'\x1d''CREATED AT' | sed 's/^origin\/rstash-//' | column -t -s$'\x1d'
+  else
+    echo "Trying to pop '$1'"
+    pop $1
+  fi
+else
+  echo "error: illegal number of parameters"
+  usage
+fi
