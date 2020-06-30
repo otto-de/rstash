@@ -22,3 +22,15 @@ Bob:
 - Or execute ```rstash list``` to get a list with all rstash branches to find the right pin
 - rstash pulls the changes in your modification stage
 - Press [Enter] to remove the temporary rstash branch
+
+## Contribute
+rstash is currently in active development and welcomes code improvements, bug fixes, suggestions and feature
+requests. 
+
+Please document all notable changes to this project in the provided changelog. Note that this project adheres to [Semantic Versioning](http://semver.org/).
+
+## License
+Distributed under Apache License 2.0
+
+## Known issues
+[Issues:Bug](https://github.com/otto-de/rstash/labels/bug)
