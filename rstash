@@ -50,6 +50,15 @@ function pop() {
     done
 }
 
+function validate_fzf() {
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "Needs the fzf tool installed to allow for multiselect."
+    echo "You can install via your favorite package manager, such as brew, apt or choco"
+    echo "More info: https://github.com/junegunn/fzf"
+    exit 1;
+  fi
+}
+
 if [ "$#" -eq 0 ]; then
   if [ -z "$(git status --porcelain)" ]; then
     echo "nothing to commit, working tree clean"
@@ -92,6 +101,21 @@ if [ "$#" -eq 0 ]; then
 elif [ "$#" -eq 1 ]; then
   if [ "$1" == "help" ]; then
     usage
+  elif [ "$1" == "pop" ]; then
+    echo "attempting to pop automatically"
+    git fetch -pa
+    REFS=$(git for-each-ref --sort=committerdate 'refs/remotes/origin/rstash-*' --format='%(refname:short)' | sed 's/origin\/rstash-//')
+    SIZE=$(echo "$REFS" | wc -l)
+    REF=$REFS
+    if [ -z "$REF" ]; then
+      echo "No rstash pins found"
+      exit 1
+    elif [ "$SIZE" -ge 2 ]; then
+      validate_fzf
+      REF=$(echo "$REFS" | fzf --tac --no-sort)
+    fi
+    echo "Trying to pop '$REF'"
+    pop "$REF"
   elif [ "$1" == "list" ]; then
     git fetch -a 2>&1 | indent
     git fetch -p 2>&1 | indent
