@@ -2,12 +2,14 @@
 set -Eeuo pipefail
 
 function usage() {
-  echo "usage: rstash [PIN]"
-  echo "  without subcommand or PIN: push your local changes to the remote stash"
+  echo "usage: rcostash [PIN]"
+  echo "  without subcommand: push your local changes to the remote stash"
   echo "  subcommands:"
-  echo "    help:  print this usage."
-  echo "    list:  list all remotely existing stashes."
-  echo "    [PIN]:   apply changes from remote stash."
+  echo "    --help:  print this usage."
+  echo "    list:    list all remotely existing stashes."
+  echo "    pop:     Interactively attempt to pop the remote stash. If only one exists,"
+  echo "                it will be popped. Otherwise the user will be prompted to select a pin"
+  echo "    PIN: apply changes from remote stash."
   echo "             PIN: returned number after pushing to remote stash"
   exit 1
 }
