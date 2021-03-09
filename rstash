@@ -114,7 +114,8 @@ elif [ "$#" -eq 1 ]; then
       exit 1
     elif [ "$SIZE" -ge 2 ]; then
       validate_fzf
-      REF=$(echo "$REFS" | fzf --tac --no-sort)
+      REF_LIST=$(git for-each-ref --sort=committerdate 'refs/remotes/origin/rstash-*' --format='%(color:yellow)%(refname:short)'$'\x1d''%(color:reset)%(authorname)'$'\x1d''%(color:green)%(committerdate:relative)%(color:reset)' | sed 's/^origin\/rstash-//' | column -t -s$'\x1d')
+      REF=$(echo "$REF_LIST" | fzf --tac --no-sort | grep -o '^\S*')
     fi
     echo "Trying to pop '$REF'"
     pop "$REF"
