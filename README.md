@@ -20,6 +20,7 @@ Bob:
 - Open the same git repository
 - Execute ```rstash 123```, whereas ```123``` is the rstash pin which was displayed in Alice's command line after executing ```rstash```
 - Or execute ```rstash list``` to get a list with all rstash branches to find the right pin
+- Or executes ```rstash pop``` to try and pop the branch automatically. If only one rstash branch is found, it is popped. If more than a single branch is found, then Bob can filter through the available options using a fuzzy finder. Note that, in this case, the most recently created branch will be the first option, so he only needs to hit enter.
 - rstash pulls the changes in your modification stage
 - Press [Enter] to remove the temporary rstash branch
 
