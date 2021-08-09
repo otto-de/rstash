@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This changelog is inspired by [keepachangelog.com](http://http://keepachangelog.com/de/)
 
+## 0.1.1 - 2021-08-09
+
+* Skip git hooks #2
+
 ## 0.1.0 - 2021-03-05
 
 * Add option for automatically selecting the most relevant rstash pin.
