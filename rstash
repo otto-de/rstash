@@ -2,15 +2,14 @@
 set -Eeuo pipefail
 
 function usage() {
-  echo "usage: rcostash [PIN]"
+  echo "usage: rstash [--help|list|pop|<PIN>]"
   echo "  without subcommand: push your local changes to the remote stash"
   echo "  subcommands:"
   echo "    --help:  print this usage."
   echo "    list:    list all remotely existing stashes."
   echo "    pop:     Interactively attempt to pop the remote stash. If only one exists,"
-  echo "                it will be popped. Otherwise the user will be prompted to select a pin"
-  echo "    PIN: apply changes from remote stash."
-  echo "             PIN: returned number after pushing to remote stash"
+  echo "             it will be popped. Otherwise the user will be prompted to select a pin"
+  echo "    <PIN>:   apply changes from remote stash with pin <PIN> (PIN: returned number after pushing to remote stash)"
   exit 1
 }
 
@@ -80,7 +79,6 @@ if [ "$#" -eq 0 ]; then
     git commit --no-verify -m "temporary rstash branch [ci-skip] [ci skip] [skip ci]" 2>&1 | indent
     git push -u origin "$BRANCH_NAME" 2>&1 | indent
     git checkout "$CURRENT_BRANCH" 2>&1 | indent
-    git branch -D "$BRANCH_NAME" 2>&1 | indent
     echo
     echo "rstash pin: ${RANDOM_BRANCH_NUMBER}"
     while true; do
@@ -92,6 +90,7 @@ if [ "$#" -eq 0 ]; then
         break
         ;;
       n)
+        git merge --no-commit --squash "$BRANCH_NAME" 2>&1 | indent
         break
         ;;
       *)
@@ -99,6 +98,7 @@ if [ "$#" -eq 0 ]; then
         ;;
       esac
     done
+    git branch -D "$BRANCH_NAME" 2>&1 | indent
   fi
 elif [ "$#" -eq 1 ]; then
   if [ "$1" == "help" ]; then
