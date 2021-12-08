@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This changelog is inspired by [keepachangelog.com](http://http://keepachangelog.com/de/)
 
+## 0.2.0 - 2021-12-08
+
+* Add "[ci-skip] [ci skip] [skip ci]" to the rstash commit message to use these as filter in your ci pipeline trigger
+* Apply just rstached changes to current branch if you don't want to discard changes locally
+
 ## 0.1.1 - 2021-08-09
 
 * Skip git hooks #2
