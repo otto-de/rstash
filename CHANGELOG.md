@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 This changelog is inspired by [keepachangelog.com](http://http://keepachangelog.com/de/)
 
+## 0.2.1 - 2021-12-09
+
+* Fix help command description in usage text
+* Return correct exit codes
+
 ## 0.2.0 - 2021-12-08
 
 * Add "[ci-skip] [ci skip] [skip ci]" to the rstash commit message to use these as filter in your ci pipeline trigger
