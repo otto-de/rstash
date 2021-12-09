@@ -5,12 +5,11 @@ function usage() {
   echo "usage: rstash [--help|list|pop|<PIN>]"
   echo "  without subcommand: push your local changes to the remote stash"
   echo "  subcommands:"
-  echo "    --help:  print this usage."
+  echo "    help:    print this usage."
   echo "    list:    list all remotely existing stashes."
   echo "    pop:     Interactively attempt to pop the remote stash. If only one exists,"
   echo "             it will be popped. Otherwise the user will be prompted to select a pin"
   echo "    <PIN>:   apply changes from remote stash with pin <PIN> (PIN: returned number after pushing to remote stash)"
-  exit 1
 }
 
 function indent() {
@@ -103,6 +102,7 @@ if [ "$#" -eq 0 ]; then
 elif [ "$#" -eq 1 ]; then
   if [ "$1" == "help" ]; then
     usage
+    exit 0
   elif [ "$1" == "pop" ]; then
     echo "attempting to pop automatically"
     git fetch -pa
@@ -130,4 +130,5 @@ elif [ "$#" -eq 1 ]; then
 else
   echo "error: illegal number of parameters"
   usage
+  exit 1
 fi
