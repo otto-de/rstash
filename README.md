@@ -7,6 +7,7 @@ Pair programming usually follows the [Driver-Navigator approach](https://martinf
 - Goto [Releases](https://github.com/otto-de/rstash/releases)
 - Download the latest rstash script
 - Move the script to a directory in your PATH
+- Alternatively: Install via [asdf](https://github.com/carlduevel/asdf-rstash)
 
 ## Usage
 Alice:
