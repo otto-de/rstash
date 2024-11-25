@@ -1,4 +1,6 @@
 # rstash
+![OSS Lifecycle](https://img.shields.io/osslifecycle?file_url=https%3A%2F%2Fgithub.com%2Fotto-de%2Frstash%2Fblob%2Fmaster%2FOSSMETADATA)
+
 r[emote]stash is a bash script that was created to make remote pair programming easier.
 
 Pair programming usually follows the [Driver-Navigator approach](https://martinfowler.com/articles/on-pair-programming.html#DriverAndNavigator). This means that both developers have the same view in front of them, but only one of them controls the mouse and the keyboard, whereas the other one says what should be done. After a previously defined duration, the roles are swapped. This works without any problems if both are sitting in front of the same computer. In times of home office this is not always the case. The local changes must therefore be transferred from one computer to the other when swapping the roles. You can do this by sending patches to each other or by working on a branch. We work with branches very rarely, so this script was created to simplify and speed up the workflow.
